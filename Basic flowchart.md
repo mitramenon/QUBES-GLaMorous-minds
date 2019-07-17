@@ -9,9 +9,9 @@ The file contains contiens 4051 babies from the years 1935 y 1946. The file has 
 1.	Line_number
 2.	Gestation_Time_days;  Gestation time from day of conception to day of birth
 3.	Weight_lb; the weight of the babies in pounds
-4.	Survival: el bebe sobrevivio “1”o no “0”
+4.	Survival: "1" or "0"
 
-*Explore the dataset by summarising and plotting it*
+* Explore the dataset by summarising and plotting it
 
 ```
 birth<-read.csv("Karn_Penrose_Infant_Survivorship_QUBES.csv")
@@ -34,12 +34,14 @@ summary(birth)
 
 hist(birth$Survival)
 
+
 ```
 
+![Histogram of survival](https://drive.google.com/drive/folders/1lMHBK0EWF-wR7-RSWJm03lWJ40QBReAK)
 # Q:
 *If we want to understand the influence of weight on survival, what is the response and predictor variable based on the dataset? 
 
-There are three model choices for you here: # binary, # logistic or # linear regression. All of these are implemented within the `glm` function in `R`.
+There are three model choices for you here: `binary`, `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
 Based on the historgram and the summary generated above which model will you use to address this question.
 
 Below are the series of commands corresponding to binary, logistic and linear regression. You will utilize your intution to run one of these snippets of code. 
