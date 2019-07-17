@@ -12,8 +12,7 @@ The objective of a logistic regression is to model the probability of an event b
 
 ## History
 
-The logistic regression test was developed by David Cox and published in 1958 in the Journal of the Royal Statistical Society. Series B (Methodological)
-Vol. 20, No. 2 (1958), pp. 215-242. Cox was a statistician from the United Kingdom who was born in 1924 in Birmingham (he is still alive when writing this book). It is recognized by multiple ovations in the area of ​​statistics including stochastic processes and experimental design among many others.  
+The logistic regression test was developed by David Cox and published in 1958 in the Journal of the Royal Statistical Society. Series B (Methodological) Vol. 20, No. 2 (1958), pp. 215-242. Cox was a statistician from the United Kingdom who was born in 1924 in Birmingham. 
 
 
 ## An example of an almost perfect logistic regression
