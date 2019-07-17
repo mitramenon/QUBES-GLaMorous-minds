@@ -2,306 +2,306 @@
 
 # Explore your data through a histogram and determine if the data is binary and appropriate for logistic regression
 
-La regresión logística es una regresión especial donde la variable predictiva (en el eje de x) es una variable continua, y la variable de respuesta tiene solamente dos alternativas. Las alternativas tipicamente se codifican como 0 o 1, pero tambien se puede codificar como vivo/muerto; presente/auscente; saludable/no saludable; gano/perdio; paso/no paso son alternativas entre otras.
+Logistic regression is a special regression where the predictive variable (on the x-axis) is a continuous variable, and the response variable has only two alternatives. The alternatives are typically coded as 0 or 1, but can also be encoded as live / dead; present / absent; healthy / unhealthy; I win / lost; step / no step are alternatives among others.
 
-Existe tambien otros tipos de regresión logística como la multinomial (múltiples grupos) y extenciones más complejas, pero de estos tipos no lo vamos a cubrir en este libro. 
+There are also other types of logistic regression such as multinomial (multiple groups) and more complex extensions, but of these types we will not cover in this book. 
 
-El objetivo de una regressión logistica es modelar la probabilidad de un evento basado en una variable independiente y determinar si un "threshold" o sea un umbral en la variable predictiva (el eje de x) que predice la probabilidad de un evento codificado en 0 y 1.  En otra palabra cual es la probabilidad de un evento que occure basado en la variable independiente.  Digamos cual es la probabilidad de un bebe sobrevivir (dependiente) basado en su peso al nacer (independiente).
-
-
-
-## Historia
-
-La prueba de regresión logistica fue desarollado por David Cox y publicado en 1958 en Journal of the Royal Statistical Society. Series B (Methodological)
-Vol. 20, No. 2 (1958), pp. 215-242.  Cox fue un estadístico del Reino Unido que nacio en 1924 en Birmingham (sigue vivo al escribir este libro). Es reconocido por múltiples oportaciones en el área de la estadística incluyendo procesos estocásticos y diseño experimentales entre muchos otras.  
+The objective of a logistic regression is to model the probability of an event based on an independent variable and determine if a "threshold" or a threshold in the predictive variable (the axis of x) that predicts the probability of an event coded in 0 and 1. In another word what is the probability of an event that occurs based on the independent variable. Let's say what is the probability of a baby surviving (dependent) based on its weight at birth (independent).
 
 
-## Un ejemplo de una regresión logística casi perfecta
 
-En un mundo perfecto se podría predicir los eventos sin error.  Creamos un set de datos donde tenemos dos grupos, en el primer grupo (los primeros diez datos de cada linea) vemos que casi todos tienen la binario de "0" aparte de uno en la posición nueve.  En el segundo grupo, los valores del 10 al 20 en cada linea todos tienen el valor de "1" aparte de un dato en la posición 12 de la segunda linea.  Si le hace más facil piensan que en el eje de x son la horas que un estudiante estudio para un examen, y la variable "0" y "1" son la consecuencia, no paso(0)/paso el examen(1).  Vemos que la mayoria de los estudiantes que estudian menos de 10 horas no pasan el examen y los que estudian más de 10 horas pasan el examen, aparte de dos estudiantes que no siguen el patrón. 
+## History
 
-
-```{r, echo=FALSE}
-library(ggplot2)
-```
+The logistic regression test was developed by David Cox and published in 1958 in the Journal of the Royal Statistical Society. Series B (Methodological)
+Vol. 20, No. 2 (1958), pp. 215-242. Cox was a statistician from the United Kingdom who was born in 1924 in Birmingham (he is still alive when writing this book). It is recognized by multiple ovations in the area of ​​statistics including stochastic processes and experimental design among many others.  
 
 
-```{r perfect logistic regression, echo=TRUE, warning=FALSE}
-continuo=c(rep(1:20,2))
-binomial=c(0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,                       
+## An example of an almost perfect logistic regression
+
+In a perfect world you could predict events without error. We create a data set where we have two groups, in the first group (the first ten data of each line) we see that almost all have the binary of "0" apart from one in position nine. In the second group, the values ​​from 10 to 20 in each line all have the value of "1" apart from a data in position 12 of the second line. If it makes it easier for you to think that in the x-axis are the hours that a student is studying for an exam, and the variable "0" and "1" are the consequence, I do not pass (0) / pass the exam (1). We see that the majority of students who study less than 10 hours do not pass the exam and those who study more than 10 hours pass the exam, apart from two students who do not follow the pattern.
+
+
+`` `{r, echo = FALSE}
+library (ggplot2)
+`` `
+
+
+`` `{r perfect logistic regression, echo = TRUE, warning = FALSE}
+continuous = c (rep (1: 20.2))
+binomial = c (0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,                       
            0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1)
-dfLogreg=data.frame(continuo,binomial)
-```
+dfLogreg = data.frame (continuous, binomial)
+`` `
 
-### Visualizar la regresión logística
+### Visualize the logistic regression
 
-Para producir el gráfico hay que utilizar "stat_smooth" con "method="glm", "glm" significa "Generalized Linear Model" (se explicará en la proxima sección), nota que hay que indicar el tipo de familia de datos en los analisis de "glm", en este caso es "binomial", por que tenemos una repuesta de dos alternativas, y por ultimo se seleciona "se=T", para tener el intervalo de confianza de la curva (el mejor modelo). Si no quiere el intervalo de confianza se añade "se=F".  
+To produce the graph you have to use "stat_smooth" with "method =" glm "," glm "means" Generalized Linear Model "(will be explained in the next section), note that you have to indicate the type of data family in the analyzes of "glm", in this case it is "binomial", because we have a response of two alternatives, and finally "se = T" is selected, to have the confidence interval of the curve (the best model). want the confidence interval is added "se = F".  
 
-Tipicamente si uno ve una curva un forma de "S" o sea "sigmoid" es lo que uno espera de una regresión logística donde hay un umbral (threshold), para predecir la probabilidad de un evento.  Si la curva no tiene una forma "sigmoid" es probable que el modelo (la regresión logística) no es un buen ajuste para los datos.  Por ejemplo, usando el gráfico el umbral de probabilidad de pasar o no (50%) es aproximadamente 9.5 horas de estudio. Hay metodos más precisos para calcular las probabilidad de eventos que se discutaran más adelante.    
+Typically if one sees a curve, an "S" form, meaning "sigmoid", is what one expects from a logistic regression where there is a threshold to predict the probability of an event. If the curve does not have a "sigmoid" shape, it is likely that the model (logistic regression) is not a good fit for the data. For example, using the graph the probability threshold to pass or not (50%) is approximately 9.5 hours of study. There are more precise methods to calculate the probability of events that will be discussed later.    
 
-```{r}
-ggplot(dfLogreg, aes(x=continuo, y=binomial)) +
-  geom_point() +
-  stat_smooth(method="glm", method.args = list(family = "binomial"), se=T) 
-```
+`` `{r}
+ggplot (dfLogreg, aes (x = continuous, y = binomial)) +
+  geom_point () +
+  stat_smooth (method = "glm", method.args = list (family = "binomial"), se = T) 
+`` `
 
-## El modelo básico
+## The basic model
 
-Para los modelos logísticos hay que utilizar la función "glm" que se encuentra en el package "stat" que se instala automaticamente cuando activa R. El "glm" significa "Generalized Linear Model" es un tipo de analisis que fue desarollado por John Nelder and R.W.M. Wedderburn in 1972 era un metodo en los primeros años que salvo mucho tiempo de computadora para hacer analisis. 
+For logistic models, we must use the "glm" function found in the "stat" package that is installed automatically when it activates R. The "glm" means "Generalized Linear Model" is a type of analysis that was developed by John Nelder and RWM Wedderburn in 1972 was a method in the early years that saved a lot of computer time for analysis.
 
-La ventaja principal del acercamiente de GLM es que lineariza la relación entre la variable independiente (fitted value) y la predictiva usando lo que se llama un "link" o sea una transformación de los datos. El tipo "link" depende del tipo de repuesta.  En nuestro caso el "link", usa una transformación para convertir la repuesta binomial en lineal.  Hay muchos otros tipos de repuestas que no son normal o binomial donde el metodo de GLM puede ser muy efectivo, como datos que tienen distribución Poisson, logNormal, gamma entre otros.  Este libro no estaremos discutiendo estos tipos de analisis.
+The main advantage of the GLM approach is that it linearizes the relationship between the independent variable (fitted value) and the predictive variable using what is called a "link" or a transformation of the data. The type "link" depends on the type of response. In our case, the "link" uses a transformation to convert the binomial response into linear. There are many other types of responses that are not normal or binomial where the GLM method can be very effective, such as data that have Poisson distribution, logNormal, gamma among others. This book will not be discussing these types of analysis.
 
-La función básica es lo siguiente, donde el logit de la probabilidad de un evento es igual al intercepto más el coefficiento * xi.  Notan que la formula es muy similar a una regresión simple solmanente que la y es la probabilidad de un evento.  
+The basic function is the following, where the logit of the probability of an event is equal to the intercept plus the coefficient * xi. Note that the formula is very similar to a simple regression solmanente that and is the probability of an event.  
 
-$$logit(p)={ b }_{ 0 }+{ b }_{ 1 }{ x }_{ i }$$
-Si hay más de una variable independiente entonces se expande la formula para las otras variables, cada variable tiene un coefficiente bi. En este caso añadi una variable explicativa suplementaria.  
+$$ logit (p) = {b} _ {0} + {b} _ {1} {x} _ {i} $$
+If there is more than one independent variable then the formula is expanded for the other variables, each variable has a coefficient bi. In this case I added a supplementary explanatory variable.  
 
-$$logit(p)={ b }_{ 0 }+{ b }_{ 1 }{ x }_{ i }+{ b }_{ 2 }{ x }_{ i }$$
+$$ logit (p) = {b} _ {0} + {b} _ {1} {x} _ {i} + {b} 2 {x} _ {i} $$
 
-La "p" es la probabilidad del evento de interes, o sea la probabilidad de "1" occure.  La transformation logística se defina como el logaritmo de los "odds".
+The "p" is the probability of the event of interest, that is, the probability of "1" occure. The logistic transformation is defined as the logarithm of the "odds".
 
-$$odds=\frac { p }{ 1-p } =\frac { la\quad probabilidad\quad del\quad evento\quad de\quad interes }{ la\quad probabilidad\quad del\quad ausencia\quad del\quad evento\quad de\quad interes }$$
+$$ odds = \ frac {p} {1-p} = \ frac {the probability \ of the event \ of \ interest} {the probability \ of the absence \ of the \ quad event of interest} $$
 
-y por consecuencia.  Nota que los resultados estan en el logaritmo natural.
+and consequently. Note that the results are in the natural logarithm.
 
-$$logit=ln\left( \frac { p }{ 1-p }  \right)$$
-
-
-Para evaluar si hay una relación logística se usa la función y la siguiente estructura de la función: "glm(y.binaria~x.continua, data=los_datos, family=binomial())".  
-
-La asignamos un nombre a nuestro modelo "logm".  
-
-```{r, model logitico}
-logm<-glm(binomial~continuo, data= dfLogreg, family = binomial())
-
-summary(logm)
-```
-
-### Interpretación del modelo
-
-Los coefficents (b's) son los "Estimates", con lo siguiente tenemos nuestra mejor linea, $logit(p)=-8.699+0.916*{ x }_{ i }$. El valor de p para la variable "continuo" es menor de 0.05, sugeriendo que es significativo y explica por lo menos en parte la relación entre la variable independiente y dependiente. Si el coefficiente es positivo como en este caso (b = 0.916) hay una relación positiva entre la cantidad de horas que estudia una persona y la probabilidad de pasar el examen.  
-
-Un concepto importante intender en regresión logistica es la intepretación de los coeficientes beta, los "odds ratio", que es lo que se mencionó anteriomente la probabilidad de los eventos dividido sobre los eventos que no ocurieron. Si el "odds ratio" es de 2 significa que la probabildad que el evento occure es dos veces más alto cuando x (x=0) esta presente que cuando x este auscente (x=0). 
+$$ logit = ln \ left (\ frac {p} {1-p} \ right) $$
 
 
-## Los supuestos de la prueba
+To evaluate if there is a logistic relationship, the function and the following structure of the function are used: "glm (y.binary ~ x.continuous, data = data_data, family = binomial ())".  
 
-Se sugiere que se evalué do componente del modelo, 1) evaluar cuan efectiva es la relación para explicar la independiente sobre la dependiente (Pseudo R cuadrado de McFadden) y 2) evaluar la proporción de observaciones que son corectamente clasificado y 3) un tercer metodo es el ROC "Receiving Operating Characteristic", que es segundo metodo de evaluar cuan efectivo el modelo es a asignar los valores a las categorias corecta.
+We assign a name to our model "logm".  
 
-### Pseudo R^2
+`` `{r, model logitico}
+logm <-glm (binomial ~ continuous, data = dfLogreg, family = binomial ())
 
-Este tipo de R^2 no se interpreta de la misma manera que una regresión lineal. No hay R^2 que explica la proporción de la variación de la independiente sobre la dependiente para la regresión logística. Lo que se usa son indice similares, en este caso el de McFadden donde tiene un rango de cero a casi uno, donde un valor de cero suguiere que no hay relación entre una variable y la otra, y más alto el pseudo R2 de McFadden mejor es como predictor (pero nunca llega a cero). 
+summary (logm)
+`` `
 
-Usando la library(pscl) y la función pR2( ) se evalua el R2 de McFadden. La regressión logistica se ajusta usando la máxima verosimilitud, en ingles "maximum likelihood". El indice de pseudo R cuadrado de McFadden compara la verosimilitud (máximo) del modelo (Lc) con el modelo que incluye solamente el intercepto sin covariantes (Lnull). 
+### Interpretation of the model
 
-$${ R }_{ McFadden }^{ 2 }=1-\frac { log({ L }_{ c }) }{ log({ L }_{ null }) }$$
+The coefficents (b's) are the "Estimates", with the following we have our best line, $ logit (p) = - 8.699 + 0.916 * {x} _ {i} $. The value of p for the variable "continuous" is less than 0.05, suggesting that it is significant and explains at least in part the relationship between the independent and dependent variable. If the coefficient is positive as in this case (b = 0.916) there is a positive relationship between the number of hours a person studies and the probability of passing the test.  
+
+An important concept to understand in logistic regression is the interpretation of the beta coefficients, the "odds ratio", which is what was mentioned above the probability of the events divided over the events that did not occur. If the "odds ratio" is 2, it means that the probability that the event occurs is twice as high when x (x = 0) is present as when x is absent (x = 0).
+
+
+## The assumptions of the test
+
+It is suggested that the component of the model be evaluated, 1) evaluate how effective the relationship is to explain the independent on the dependent (McFadden's Pseudo R square) and 2) evaluate the proportion of observations that are correctly classified and 3) a third method is the ROC "Receiving Operating Characteristic", which is the second method to evaluate how effective the model is to assign the values ​​to the correct categories.
+
+### Pseudo R ^ 2
+
+This type of R ^ 2 is not interpreted in the same way as a linear regression. There is no R ^ 2 that explains the proportion of the variation of the independent over the dependent for the logistic regression. What is used are similar indexes, in this case the McFadden where it has a range of zero to almost one, where a value of zero suggests that there is no relationship between one variable and the other, and higher the pseudo R2 of McFadden better it is as a predictor (but never reaches zero).
+
+Using the library (pscl) and the pR2 () function, the McFadden R2 is evaluated. The logistic regression is adjusted using the maximum likelihood, in English "maximum likelihood". The pseudo R squared index of McFadden compares the (maximum) likelihood of the model (Lc) with the model that includes only the intercept without covariates (Lnull).
+
+$$ {R} _ {McFadden} ^ {2} = 1- \ frac {log ({L} _ {c})} {log ({L} _ {null})} $$
  
 
-```{r}
-library(pscl)
+`` `{r}
+library (pscl)
 
-pR2(logm)
-```
-
-
-### La proporción de valores clasificados corectamente
-
-Una manera de evaluar cuan efectivo es el modelo es evaluar si la proporción de valores observado en "1" y "0" son tambien predecido a estar en esta misma categoria. Tenemos tres pasos
-
-1. calcular la probabilidades de estar en un grupo o otro (vea abajo proxima sección si quiere calcular valores individuales)
-2. asignar a cada uno el estado de "1" o "0"
-3. comparar los valores predecido a los valores reales y calcular el promedio para todo el grupo.
-
-Para nuestro grupo de datos ficticio lo que se observa que 95% de los valores estan corectamente asignados.  
+pR2 (logm)
+`` `
 
 
+### The proportion of values ​​correctly classified
+
+One way to evaluate how effective the model is is to evaluate whether the proportion of values ​​observed in "1" and "0" are also predicted to be in this same category. We have three steps
+
+1. calculate the probabilities of being in one group or another (see below next section if you want to calculate individual values)
+2. assign each one the status of "1" or "0"
+3. compare the predicted values ​​to the real values ​​and calculate the average for the whole group.
+
+For our fictitious data group it is observed that 95% of the values ​​are correctly assigned.  
 
 
-```{r}
-library(tidyverse)
-head(dfLogreg)
-probabilities <- logm %>% predict(dfLogreg, type = "response")
-predicted.classes <- ifelse(probabilities > 0.5, "1", "0")
-mean(predicted.classes==dfLogreg$binomial)
-```
-Usar un ejemplo de datos reales
+
+
+`` `{r}
+library (tidyverse)
+head (dfLogreg)
+probabilities <- logm%>% predict (dfLogreg, type = "response")
+predicted.classes <- ifelse (probabilities> 0.5, "1", "0")
+mean (predicted.classes == dfLogreg $ binomial)
+`` `
+Use an example of real data
 
 
 
 ### ROC curve
 
-El "Receiving Operating Characteristic" ROC es una medida de clasificar los valores y evaluar cuan efectivo el metodo lográ las clasificaciones.  Se evalua la proporción de los valores que fueron corectamente clasificado y los valores que fueron incorectamente clasificados en ambos grupos. Lo que uno observa es el area debajo la curva de ROC. La metrica varia de .50 a 1.0 y valores por encima de 0.80 indica que el modelo es bueno para descriminar entre las dos variables de interes.  
+The "Receiving Operating Characteristic" ROC is a measure to classify the values ​​and evaluate how effective the method will achieve the classifications. The proportion of the values ​​that were correctly classified and the values ​​that were incorrectly classified in both groups is evaluated. What one observes is the area below the ROC curve. The metric varies from .50 to 1.0 and values ​​above 0.80 indicate that the model is good for discriminating between the two variables of interest.  
 
-```{r}
-library(pROC)
-f1 = roc(binomial ~ continuo, data=dfLogreg) 
+`` `{r}
+library (pROC)
+f1 = roc (binomial ~ continuous, data = dfLogreg) 
 f1
-plot(f1, col="red")
-```
+plot (f1, col = "network")
+`` `
 
 
-### Predicir la probabilidades de un evento especifico. 
+### Predicting the probabilities of a specific event. 
 
-Se puede predecir la probabilidad de cualquier valor de Xi usando la formula siguiente. 
+You can predict the probability of any value of Xi using the following formula. 
 
-$$p=\frac { exp(b_{ 0 }+{ b }_{ 1 }*{ x }_{ i }) }{ 1+exp(b_{ 0 }+{ b }_{ 1 }*{ x }_{ i }) } $$
+$$ p = \ frac {exp (b_ {0} + {b} _ {1} * {x} _ {i})} {1 + exp (b_ {0} + {b} _ {1} * { x} _ {i}} $$
 
-Entonces cual es la probabilidad de un estudiante pasar el examen si estudia 11 horas. 
+So what is the probability of a student passing the exam if he studies 11 hours? 
 
-$$p=\frac { exp(-8.699+0.916*11) }{ 1+exp(-8.699+0.916*11) }$$
-La probabilidad es de pasar el examen es de 79.9%. 
+$$ p = \ frac {exp (-8.699 + 0.916 * 11)} {1 + exp (-8.699 + 0.916 * 11)} $$
+The probability is to pass the test is 79.9%. 
 
-```{r}
-p=exp(-8.699+0.916*11)/(1+exp(-8.699+0.916*11))
+`` `{r}
+p = exp (-8.699 + 0.916 * 11) / (1 + exp (-8.699 + 0.916 * 11))
 p
-```
+`` `
 
 
-En el proximo ejemplo estaremos utilizando dartos reales para poner en practica lo anterior.  
+In the next example we will be using real dartos to put into practice the above.  
 
-##  Karn and Penrose: El peso, periodo de gestación y probabilidad de sobrevivir en bébes. 
+## Karn and Penrose: Weight, gestation period and probability of surviving in bébes. 
 
 
-### Los Datos
+### The data
 
-Los datos provienen de un estudio realizado por Mary N. Karn and L. S. Penrose publicado en "Annals of Eugenics", titulado "Birth weight and gestation time in relation to maternal age, parity and infant survival" publicado en 1951.  Estaremos usando solamente una parte de los datos, specificamente los datos de los bébes varones. El periodo de gestación y el peso de los bebés varon al nacer y su supervivencia.  Para faciltar el trabajo he modificado los datos un poco para cumplir con las tareas asignada.
+The data come from a study conducted by Mary N. Karn and LS Penrose published in "Annals of Eugenics", entitled "Birth weight and gestation time in relation to maternal age, parity and infant survival" published in 1951. We will be using only a part of the data, specifically the data of male bebes. The gestation period and the weight of the babies were born at birth and their survival. To facilitate the work I have modified the data a bit to fulfill the assigned tasks.
 
-En el archivo "Karn_Penrose_student" tienen datos sobre 7036 nacimiento entre los años 1935 y 1946. El archivo tiene 4 columnas:
+In the file "Karn_Penrose_student" they have data on 7036 birth between the years 1935 and 1946. The file has 4 columns:
 
-1. Line_number = la secuencia de los datos
-2. Gestation_Index =  Un indice de periodo de gestación 
-3. Weight_Index = un indice del peso del bébe al nacer
-4. Surv_Index = El indices de supervivencia binomial, 0 = no sobrevivió, 1 = sobrevivió. 
+1. Line_number = the sequence of the data
+2. Gestation_Index = An index of gestation period 
+3. Weight_Index = an index of the weight of the baby at birth
+4. Surv_Index = The binomial survival rates, 0 = did not survive, 1 = survived. 
 
-Los datos de "Gestation Index" y "Weight Index" estan organizado en las desviacion del promedio.  En otra palabra el "0" equivale al peso promedio de todos los bebés, un valor negativo son valores más pequeño que el promedio y un valor positivo es un valor más grande que el promedio.   Un ejemplo si para el "Gestation_Index" el valor del bebe es cero, entonces ese bebe tenia el valor promedio de aproximadamente 40 semanas de gestación, si para otro bebé tiene -1, tiene 40 semanas menos una desviación estandar por debajo el promedio.  
+The data of "Gestation Index" and "Weight Index" are organized in the deviations from the average. In another word, "0" is the average weight of all babies, a negative value is a value smaller than the average and a positive value is a value greater than the average. An example if for the "Gestation_Index" the value of the baby is zero, then that baby had the average value of approximately 40 weeks of gestation, if for another baby it has -1, it has 40 weeks less a standard deviation below the average.  
 
-El data frame tiene 4052 lineas de datos (datos de 4052 bébes), el peso minimo de un bebe al nacer fue 1 libra y al maximo fue 13 libras, el periodo de gestación minimo fue de 155 dias y el maximo fue de 345 dias.
+The data frame has 4052 data lines (data of 4052 bebes), the minimum weight of a baby at birth was 1 pound and the maximum was 13 pounds, the minimum gestation period was 155 days and the maximum was 345 days.
 
-```{r}
-library(readr)
-Karn_Penrose_infant_survivorship <- read_csv("~/Google Drive/Biometry/Biometria 2017/Data_FILES/Karn_Penrose_infant_survivorship.csv")
-KPdata=Karn_Penrose_infant_survivorship
-head(KPdata)
-summary(KPdata)
-```
+`` `{r}
+library (readr)
+Karn_Penrose_infant_survivorship <- read_csv ("~ / Google Drive / Biometry / Biometrics 2017 / Data_FILES / Karn_Penrose_infant_survivorship.csv")
+KPdata = Karn_Penrose_infant_survivorship
+head (KPdata)
+summary (KPdata)
+`` `
 
-### Las hipotesis
+### The hypotheses
 
-  - Hipotesis Nula: El peso de los varones y el periodo de gestacion no afectan el indice de supervivencia. 
+  - Null hypothesis: The weight of the males and the gestation period do not affect the survival rate. 
   
-  - Hipotesis alterna #1: Los varones con un periodo de  mayor gestacion tienen mayor probabilidad de supervivencia que los varones con un mayor peso.
+  - Alternative hypothesis # 1: Males with a longer gestation period have a higher probability of survival than males with a greater weight.
 
-  - Hipotesis alterna #2: Los varones con mayor peso al nacer tienen mayor probabilidad de supervivencia que los varones con un mayor periodo de gestacion.
+  - Alternative hypothesis # 2: Men with higher birth weight have a higher probability of survival than men with a longer gestation period.
 
 ### 
 
-```{r variable de respuesta}
-names(KPdata)
-str(KPdata)
-library(ggplot2)
-ggplot(KPdata, aes(Weigth_lb))+
-  geom_histogram(colour="white", fill="red")+
-  labs(X = "Weigth_lb")+
-  ggtitle("Count vs Weigth_lb")
+`` `{r response variable}
+names (KPdata)
+str (KPdata)
+library (ggplot2)
+ggplot (KPdata, aes (Weigth_lb)) +
+  geom_histogram (color = "white", fill = "red") +
+  labs (X = "Weigth_lb") +
+  ggtitle ("Count vs Weigth_lb")
 
-```
+`` `
 
-### Haga una grafica de las variables explicativas
-##a. Periodo de gestación
-##b. Peso de los varones al nacer
+### Graph the explanatory variables
+##to. Gestation period
+## b. Weight of males at birth
 
-```{r periodo de gestacion}
-ggplot(KPdata, aes(Gestation_Time_days))+
-  geom_histogram(fill="white", colour="red")+
-  labs(x= "Gestation Period")+
-  ggtitle("Count vs Gestation Period")
+`` `{r period of gestation}
+ggplot (KPdata, aes (Gestation_Time_days)) +
+  geom_histogram (fill = "white", color = "red") +
+  labs (x = "Gestation Period") +
+  ggtitle ("Count vs. Gestation Period")
  
-```
+`` `
 
-```{r weight-index}
-ggplot(KPdata,aes(Survival))+
-  geom_histogram(fill="white", colour="red")+
-  labs(x="Survival")+
-  ggtitle("Count vs Survival")
+`` `{r weight-index}
+ggplot (KPdata, aes (Survival)) +
+  geom_histogram (fill = "white", color = "red") +
+  labs (x = "Survival") +
+  ggtitle ("Count vs Survival")
 
-```
-
-
-### Pregunta #4: Usando la prueba correcta evalua la relacion entre la supervivencia y:
-##a. periodo de gestacion
-##b. peso de los varones al nacer
-
-```{r Periodo de Gestacion y supervivencia}
-library(car)
-names(KPdata)
-modelgest<-glm(Survival~Weigth_lb, data= KPdata, family = binomial())
-
-summary(modelgest)
+`` `
 
 
-ggplot(KPdata, aes(x=Weigth_lb, y=Survival)) +
-  geom_jitter() +
-  stat_smooth( method="glm", method.args = list(family = "binomial"), se=T) 
-```
+### Question # 4: Using the correct test, evaluate the relationship between survival and:
+##to. gestation period
+## b. weight of males at birth
+
+`` `{r Period of Gestation and survival}
+library (car)
+names (KPdata)
+modelgest <-glm (Survival ~ Weigth_lb, data = KPdata, family = binomial ())
+
+summary (modelgest)
+
+
+ggplot (KPdata, aes (x = Weigth_lb, y = Survival)) +
+  geom_jitter () +
+  stat_smooth (method = "glm", method.args = list (family = "binomial"), se = T) 
+`` `
 
 
 
 
-```{r}
-ggplot(KPdata, aes(x=Gestation_Time_days, y=Survival)) +
-  geom_jitter(height=0.10) +
-  stat_smooth( method="glm", method.args = list(family = "binomial")) +
-  geom_smooth(color="red")+
-  geom_smooth(method = lm, color="yellow")+
-  labs(x= "Weight Index", y= "Surv Probability")+
-  ggtitle("Models of Male Survival Probabilities at Birth based on Weight")
-```
+`` `{r}
+ggplot (KPdata, aes (x = Gestation_Time_days, y = Survival)) +
+  geom_jitter (height = 0.10) +
+  stat_smooth (method = "glm", method.args = list (family = "binomial")) +
+  geom_smooth (color = "red") +
+  geom_smooth (method = lm, color = "yellow") +
+  labs (x = "Weight Index", y = "Surv Probability") +
+  ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
+`` `
 
-```{r Weight-index y supervivencia}
-modelweight<- glm(Survival~Gestation_Time_days, data = KPdata, family = binomial())
+`` `{r Weight-index and survival}
+modelweight <- glm (Survival ~ Gestation_Time_days, data = KPdata, family = binomial ())
 
-summary(modelweight)
+summary (modelweight)
 
-```
+`` `
 
-Which is the following is the best MODEL?  What is a method of choice which can be used that can be more quantitative and less qualitative.  
+Which is the following is the best MODEL? What is a method of choice which can be used quantitatively and less qualitative.  
 
 Compare 3 models
 
-Survival~Gestation_Time
-Survival~Weight
-Survival~Gestation_Time+Weight
+Survival ~ Gestation_Time
+Survival ~ Weight
+Survival ~ Gestation_Time + Weight
 
-Use the AIC or the AIC, Akaike Information Criterion or  with the correction for small sample size.  
+Use the AIC or the AIC, Akaike Information Criterion or with the correction for small sample size.  
 
 From Wikipedia
 
-*The Akaike information criterion (AIC) is an estimator of the relative quality of statistical models for a given set of data. Given a collection of models for the data, AIC estimates the quality of each model, relative to each of the other models. Thus, AIC provides a means for model selection.
+* The Akaike information criterion (AIC) is an estimator of the relative quality of statistical models for a given set of data. Given a collection of models for the data, AIC estimates the quality of each model, relative to each of the other models. Thus, AIC provides a means for model selection.
 
 AIC is founded on information theory: it offers an estimate of the relative information lost when a given model is used to represent the process that generated the data. (In doing so, it deals with the trade-off between the goodness of fit of the model and the simplicity of the model.)
 
-AIC does not provide a test of a model in the sense of testing a null hypothesis. It tells nothing about the absolute quality of a model, only the quality relative to other models. Thus, if all the candidate models fit poorly, AIC will not give any warning of that.*
+AIC does not provide a test of a model in the sense of testing a null hypothesis. It tells nothing about the absolute quality of a model, only the quality relative to other models. Thus, if all the candidate models fit poorly, AIC will not give any warning of that. *
 
 https://en.wikipedia.org/wiki/Akaike_information_criterion
 
 
-## Lo que uno reporta 
-Lo que uno reporta en una investigación y una publicación.
+## What one reports 
+What one reports in an investigation and a publication.
 
 
 
 https://stats.idre.ucla.edu/other/mult-pkg/seminars/statistical-writing/
 
 
-When interpreting the output in the logit metric, “… for a unit change in xk, we expect the logit to change by k, holding all other variables constant.”  “This interpretation does not depend on the level of the other variables in the model.”
+When interpreting the output in the logit metric, "... for a unit change in x, we expect the log to change by k, holding all other variables constant." "This interpretation does not depend on the level of the other variables in the model . "
 
 
-When interpreting the output in the logit metric, “… for a unit change in xk, we expect the logit to change by k, holding all other variables constant.”  “This interpretation does not depend on the level of the other variables in the model.”
+When interpreting the output in the logit metric, "... for a unit change in x, we expect the log to change by k, holding all other variables constant." "This interpretation does not depend on the level of the other variables in the model . "
 
-When interpreting the output in the metric of odds ratios, “For a unit change in xk, the odds are expected to change by a factor of exp(k), holding all other variables constant.”  “When interpreting the odds ratios, remember that they are multiplicative.  This means that positive effects are greater than one and negative effects are between zero and one. Magnitudes of positive and negative effects should be compared by taking the inverse of the negative effect (or vice versa).”  “For exp(k) > 1, you could say that the odds are “exp(k) times larger”, for exp(k) < 1, you could say that the odds are “exp(k) times smaller.””
+When interpreting the output in the metric of odds ratios, "For a unit change in x, the odds are expected to change by a factor of exp (k), holding all other variables constant." "When interpreting the odds ratios, remember that They are multiplicative. This means that positive effects are greater than one and negative effects are between zero and one. Magnitudes of positive and negative effects should be compared by taking the inverse of the negative effect (or vice versa). "" For exp (k)> 1, you could say that the odds are "exp (k) times larger", for exp (k) <1, you could say that the odds are "exp (k) times smaller." "
 
-Now if you are having difficulty understanding a unit change in the log odds really means, and odds ratios aren’t as clear as you thought, you might want to consider describing your results in the metric of predicted probabilities. Many audiences, and indeed, many researchers, find this to be a more intuitive metric in which to understand the results of a logistic regression.  While the relationship between the outcome variable and the predictor variables is linear in the logit metric, the relationship is not linear in the probability metric.  Remember that “… a constant factor change in the odds does not correspond to a constant change or a constant factor change in the probability.  This nonlinearity means that you will have to be very precise about the values at which the other variables in the model are held.
+Now if you are having difficulty understanding a unit change in the log odds really means, and odds ratios are not as clear as you thought, you might want to consider describing your results in the metric of predicted probabilities. Many audiences, and indeed, many researchers, find this to be more intuitive metric in which to understand the results of a logistic regression. While the relationship between the outcome variable and the predictor variables is linear in the logit metric, the relationship is not linear in the probability metric. Remember that "... a constant factor change in the odds does not correspond to a constant change or a constant factor change in the probability. This nonlinearity means that you will have to be precise about the values ​​at which the other variables in the model are held.
 
-I hope that this example makes clear why I say that in order to write a clear and coherent results section, you really need to understand the statistical tests that you are running.
+I hope that this example makes clear why I say that in order to write to clear and coherent results, you really need to understand the statistical tests that you are running.
 
-Our next example concerns confidence intervals, so let’s jump ahead a little bit and talk about confidence intervals in logistic regression output.  “If you report the odds ratios instead of the untransformed coefficients, the 95% confidence interval of the odds ratio is typically reported instead of the standard error.  The reason is that the odds ratio is a nonlinear transformation of the logit coefficient, so the confidence interval is asymmetric.”
+Our next example concerns confidence intervals, so let's jump ahead to little bit and talk about confidence intervals in logistic regression output. "If you report the odds ratios instead of the untransformed coefficients, the 95% confidence interval of the odds ratio is typically reported instead of the standard error. The reason is that the odds ratio is a nonlinear transformation of the logit coefficient, so the confidence interval is asymmetric. "
