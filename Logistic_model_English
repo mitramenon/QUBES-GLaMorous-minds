@@ -1,20 +1,6 @@
----
-title: "10_Regressión_Logistica"
-output:
-  pdf_document: default
-  html_document: default
----
+#Logistic regression model
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r, echo=FALSE}
-library(ggplot2)
-```
-
-
-# ¿Qué es una Regresión Logística Binaria?
+# Explore your data through a histogram and determine if the data is binary and appropriate for logistic regression
 
 La regresión logística es una regresión especial donde la variable predictiva (en el eje de x) es una variable continua, y la variable de respuesta tiene solamente dos alternativas. Las alternativas tipicamente se codifican como 0 o 1, pero tambien se puede codificar como vivo/muerto; presente/auscente; saludable/no saludable; gano/perdio; paso/no paso son alternativas entre otras.
 
@@ -34,6 +20,10 @@ Vol. 20, No. 2 (1958), pp. 215-242.  Cox fue un estadístico del Reino Unido que
 
 En un mundo perfecto se podría predicir los eventos sin error.  Creamos un set de datos donde tenemos dos grupos, en el primer grupo (los primeros diez datos de cada linea) vemos que casi todos tienen la binario de "0" aparte de uno en la posición nueve.  En el segundo grupo, los valores del 10 al 20 en cada linea todos tienen el valor de "1" aparte de un dato en la posición 12 de la segunda linea.  Si le hace más facil piensan que en el eje de x son la horas que un estudiante estudio para un examen, y la variable "0" y "1" son la consecuencia, no paso(0)/paso el examen(1).  Vemos que la mayoria de los estudiantes que estudian menos de 10 horas no pasan el examen y los que estudian más de 10 horas pasan el examen, aparte de dos estudiantes que no siguen el patrón. 
 
+
+```{r, echo=FALSE}
+library(ggplot2)
+```
 
 
 ```{r perfect logistic regression, echo=TRUE, warning=FALSE}
