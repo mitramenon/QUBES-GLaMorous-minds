@@ -124,3 +124,184 @@ probabilities <- logm %>% predict(dfLogreg, type = "response")
 predicted.classes <- ifelse(probabilities > 0.5, "1", "0")
 mean(predicted.classes==dfLogreg$binomial)
 ```
+Usar un ejemplo de datos reales
+
+
+
+### ROC curve
+
+El "Receiving Operating Characteristic" ROC es una medida de clasificar los valores y evaluar cuan efectivo el metodo lográ las clasificaciones.  Se evalua la proporción de los valores que fueron corectamente clasificado y los valores que fueron incorectamente clasificados en ambos grupos. Lo que uno observa es el area debajo la curva de ROC. La metrica varia de .50 a 1.0 y valores por encima de 0.80 indica que el modelo es bueno para descriminar entre las dos variables de interes.  
+
+```{r}
+library(pROC)
+f1 = roc(binomial ~ continuo, data=dfLogreg) 
+f1
+plot(f1, col="red")
+```
+
+
+### Predicir la probabilidades de un evento especifico. 
+
+Se puede predecir la probabilidad de cualquier valor de Xi usando la formula siguiente. 
+
+$$p=\frac { exp(b_{ 0 }+{ b }_{ 1 }*{ x }_{ i }) }{ 1+exp(b_{ 0 }+{ b }_{ 1 }*{ x }_{ i }) } $$
+
+Entonces cual es la probabilidad de un estudiante pasar el examen si estudia 11 horas. 
+
+$$p=\frac { exp(-8.699+0.916*11) }{ 1+exp(-8.699+0.916*11) }$$
+La probabilidad es de pasar el examen es de 79.9%. 
+
+```{r}
+p=exp(-8.699+0.916*11)/(1+exp(-8.699+0.916*11))
+p
+```
+
+
+En el proximo ejemplo estaremos utilizando dartos reales para poner en practica lo anterior.  
+
+##  Karn and Penrose: El peso, periodo de gestación y probabilidad de sobrevivir en bébes. 
+
+
+### Los Datos
+
+Los datos provienen de un estudio realizado por Mary N. Karn and L. S. Penrose publicado en "Annals of Eugenics", titulado "Birth weight and gestation time in relation to maternal age, parity and infant survival" publicado en 1951.  Estaremos usando solamente una parte de los datos, specificamente los datos de los bébes varones. El periodo de gestación y el peso de los bebés varon al nacer y su supervivencia.  Para faciltar el trabajo he modificado los datos un poco para cumplir con las tareas asignada.
+
+En el archivo "Karn_Penrose_student" tienen datos sobre 7036 nacimiento entre los años 1935 y 1946. El archivo tiene 4 columnas:
+
+1. Line_number = la secuencia de los datos
+2. Gestation_Index =  Un indice de periodo de gestación 
+3. Weight_Index = un indice del peso del bébe al nacer
+4. Surv_Index = El indices de supervivencia binomial, 0 = no sobrevivió, 1 = sobrevivió. 
+
+Los datos de "Gestation Index" y "Weight Index" estan organizado en las desviacion del promedio.  En otra palabra el "0" equivale al peso promedio de todos los bebés, un valor negativo son valores más pequeño que el promedio y un valor positivo es un valor más grande que el promedio.   Un ejemplo si para el "Gestation_Index" el valor del bebe es cero, entonces ese bebe tenia el valor promedio de aproximadamente 40 semanas de gestación, si para otro bebé tiene -1, tiene 40 semanas menos una desviación estandar por debajo el promedio.  
+
+El data frame tiene 4052 lineas de datos (datos de 4052 bébes), el peso minimo de un bebe al nacer fue 1 libra y al maximo fue 13 libras, el periodo de gestación minimo fue de 155 dias y el maximo fue de 345 dias.
+
+```{r}
+library(readr)
+Karn_Penrose_infant_survivorship <- read_csv("~/Google Drive/Biometry/Biometria 2017/Data_FILES/Karn_Penrose_infant_survivorship.csv")
+KPdata=Karn_Penrose_infant_survivorship
+head(KPdata)
+summary(KPdata)
+```
+
+### Las hipotesis
+
+  - Hipotesis Nula: El peso de los varones y el periodo de gestacion no afectan el indice de supervivencia. 
+  
+  - Hipotesis alterna #1: Los varones con un periodo de  mayor gestacion tienen mayor probabilidad de supervivencia que los varones con un mayor peso.
+
+  - Hipotesis alterna #2: Los varones con mayor peso al nacer tienen mayor probabilidad de supervivencia que los varones con un mayor periodo de gestacion.
+
+### 
+
+```{r variable de respuesta}
+names(KPdata)
+str(KPdata)
+library(ggplot2)
+ggplot(KPdata, aes(Weigth_lb))+
+  geom_histogram(colour="white", fill="red")+
+  labs(X = "Weigth_lb")+
+  ggtitle("Count vs Weigth_lb")
+
+```
+
+### Haga una grafica de las variables explicativas
+##a. Periodo de gestación
+##b. Peso de los varones al nacer
+
+```{r periodo de gestacion}
+ggplot(KPdata, aes(Gestation_Time_days))+
+  geom_histogram(fill="white", colour="red")+
+  labs(x= "Gestation Period")+
+  ggtitle("Count vs Gestation Period")
+ 
+```
+
+```{r weight-index}
+ggplot(KPdata,aes(Survival))+
+  geom_histogram(fill="white", colour="red")+
+  labs(x="Survival")+
+  ggtitle("Count vs Survival")
+
+```
+
+
+### Pregunta #4: Usando la prueba correcta evalua la relacion entre la supervivencia y:
+##a. periodo de gestacion
+##b. peso de los varones al nacer
+
+```{r Periodo de Gestacion y supervivencia}
+library(car)
+names(KPdata)
+modelgest<-glm(Survival~Weigth_lb, data= KPdata, family = binomial())
+
+summary(modelgest)
+
+
+ggplot(KPdata, aes(x=Weigth_lb, y=Survival)) +
+  geom_jitter() +
+  stat_smooth( method="glm", method.args = list(family = "binomial"), se=T) 
+```
+
+
+
+
+```{r}
+ggplot(KPdata, aes(x=Gestation_Time_days, y=Survival)) +
+  geom_jitter(height=0.10) +
+  stat_smooth( method="glm", method.args = list(family = "binomial")) +
+  geom_smooth(color="red")+
+  geom_smooth(method = lm, color="yellow")+
+  labs(x= "Weight Index", y= "Surv Probability")+
+  ggtitle("Models of Male Survival Probabilities at Birth based on Weight")
+```
+
+```{r Weight-index y supervivencia}
+modelweight<- glm(Survival~Gestation_Time_days, data = KPdata, family = binomial())
+
+summary(modelweight)
+
+```
+
+Which is the following is the best MODEL?  What is a method of choice which can be used that can be more quantitative and less qualitative.  
+
+Compare 3 models
+
+Survival~Gestation_Time
+Survival~Weight
+Survival~Gestation_Time+Weight
+
+Use the AIC or the AIC, Akaike Information Criterion or  with the correction for small sample size.  
+
+From Wikipedia
+
+*The Akaike information criterion (AIC) is an estimator of the relative quality of statistical models for a given set of data. Given a collection of models for the data, AIC estimates the quality of each model, relative to each of the other models. Thus, AIC provides a means for model selection.
+
+AIC is founded on information theory: it offers an estimate of the relative information lost when a given model is used to represent the process that generated the data. (In doing so, it deals with the trade-off between the goodness of fit of the model and the simplicity of the model.)
+
+AIC does not provide a test of a model in the sense of testing a null hypothesis. It tells nothing about the absolute quality of a model, only the quality relative to other models. Thus, if all the candidate models fit poorly, AIC will not give any warning of that.*
+
+https://en.wikipedia.org/wiki/Akaike_information_criterion
+
+
+## Lo que uno reporta 
+Lo que uno reporta en una investigación y una publicación.
+
+
+
+https://stats.idre.ucla.edu/other/mult-pkg/seminars/statistical-writing/
+
+
+When interpreting the output in the logit metric, “… for a unit change in xk, we expect the logit to change by k, holding all other variables constant.”  “This interpretation does not depend on the level of the other variables in the model.”
+
+
+When interpreting the output in the logit metric, “… for a unit change in xk, we expect the logit to change by k, holding all other variables constant.”  “This interpretation does not depend on the level of the other variables in the model.”
+
+When interpreting the output in the metric of odds ratios, “For a unit change in xk, the odds are expected to change by a factor of exp(k), holding all other variables constant.”  “When interpreting the odds ratios, remember that they are multiplicative.  This means that positive effects are greater than one and negative effects are between zero and one. Magnitudes of positive and negative effects should be compared by taking the inverse of the negative effect (or vice versa).”  “For exp(k) > 1, you could say that the odds are “exp(k) times larger”, for exp(k) < 1, you could say that the odds are “exp(k) times smaller.””
+
+Now if you are having difficulty understanding a unit change in the log odds really means, and odds ratios aren’t as clear as you thought, you might want to consider describing your results in the metric of predicted probabilities. Many audiences, and indeed, many researchers, find this to be a more intuitive metric in which to understand the results of a logistic regression.  While the relationship between the outcome variable and the predictor variables is linear in the logit metric, the relationship is not linear in the probability metric.  Remember that “… a constant factor change in the odds does not correspond to a constant change or a constant factor change in the probability.  This nonlinearity means that you will have to be very precise about the values at which the other variables in the model are held.
+
+I hope that this example makes clear why I say that in order to write a clear and coherent results section, you really need to understand the statistical tests that you are running.
+
+Our next example concerns confidence intervals, so let’s jump ahead a little bit and talk about confidence intervals in logistic regression output.  “If you report the odds ratios instead of the untransformed coefficients, the 95% confidence interval of the odds ratio is typically reported instead of the standard error.  The reason is that the odds ratio is a nonlinear transformation of the logit coefficient, so the confidence interval is asymmetric.”
