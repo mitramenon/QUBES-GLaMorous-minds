@@ -1,0 +1,136 @@
+---
+title: "10_Regressión_Logistica"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(ggplot2)
+```
+
+
+# ¿Qué es una Regresión Logística Binaria?
+
+La regresión logística es una regresión especial donde la variable predictiva (en el eje de x) es una variable continua, y la variable de respuesta tiene solamente dos alternativas. Las alternativas tipicamente se codifican como 0 o 1, pero tambien se puede codificar como vivo/muerto; presente/auscente; saludable/no saludable; gano/perdio; paso/no paso son alternativas entre otras.
+
+Existe tambien otros tipos de regresión logística como la multinomial (múltiples grupos) y extenciones más complejas, pero de estos tipos no lo vamos a cubrir en este libro. 
+
+El objetivo de una regressión logistica es modelar la probabilidad de un evento basado en una variable independiente y determinar si un "threshold" o sea un umbral en la variable predictiva (el eje de x) que predice la probabilidad de un evento codificado en 0 y 1.  En otra palabra cual es la probabilidad de un evento que occure basado en la variable independiente.  Digamos cual es la probabilidad de un bebe sobrevivir (dependiente) basado en su peso al nacer (independiente).
+
+
+
+## Historia
+
+La prueba de regresión logistica fue desarollado por David Cox y publicado en 1958 en Journal of the Royal Statistical Society. Series B (Methodological)
+Vol. 20, No. 2 (1958), pp. 215-242.  Cox fue un estadístico del Reino Unido que nacio en 1924 en Birmingham (sigue vivo al escribir este libro). Es reconocido por múltiples oportaciones en el área de la estadística incluyendo procesos estocásticos y diseño experimentales entre muchos otras.  
+
+
+## Un ejemplo de una regresión logística casi perfecta
+
+En un mundo perfecto se podría predicir los eventos sin error.  Creamos un set de datos donde tenemos dos grupos, en el primer grupo (los primeros diez datos de cada linea) vemos que casi todos tienen la binario de "0" aparte de uno en la posición nueve.  En el segundo grupo, los valores del 10 al 20 en cada linea todos tienen el valor de "1" aparte de un dato en la posición 12 de la segunda linea.  Si le hace más facil piensan que en el eje de x son la horas que un estudiante estudio para un examen, y la variable "0" y "1" son la consecuencia, no paso(0)/paso el examen(1).  Vemos que la mayoria de los estudiantes que estudian menos de 10 horas no pasan el examen y los que estudian más de 10 horas pasan el examen, aparte de dos estudiantes que no siguen el patrón. 
+
+
+
+```{r perfect logistic regression, echo=TRUE, warning=FALSE}
+continuo=c(rep(1:20,2))
+binomial=c(0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,                       
+           0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1)
+dfLogreg=data.frame(continuo,binomial)
+```
+
+### Visualizar la regresión logística
+
+Para producir el gráfico hay que utilizar "stat_smooth" con "method="glm", "glm" significa "Generalized Linear Model" (se explicará en la proxima sección), nota que hay que indicar el tipo de familia de datos en los analisis de "glm", en este caso es "binomial", por que tenemos una repuesta de dos alternativas, y por ultimo se seleciona "se=T", para tener el intervalo de confianza de la curva (el mejor modelo). Si no quiere el intervalo de confianza se añade "se=F".  
+
+Tipicamente si uno ve una curva un forma de "S" o sea "sigmoid" es lo que uno espera de una regresión logística donde hay un umbral (threshold), para predecir la probabilidad de un evento.  Si la curva no tiene una forma "sigmoid" es probable que el modelo (la regresión logística) no es un buen ajuste para los datos.  Por ejemplo, usando el gráfico el umbral de probabilidad de pasar o no (50%) es aproximadamente 9.5 horas de estudio. Hay metodos más precisos para calcular las probabilidad de eventos que se discutaran más adelante.    
+
+```{r}
+ggplot(dfLogreg, aes(x=continuo, y=binomial)) +
+  geom_point() +
+  stat_smooth(method="glm", method.args = list(family = "binomial"), se=T) 
+```
+
+## El modelo básico
+
+Para los modelos logísticos hay que utilizar la función "glm" que se encuentra en el package "stat" que se instala automaticamente cuando activa R. El "glm" significa "Generalized Linear Model" es un tipo de analisis que fue desarollado por John Nelder and R.W.M. Wedderburn in 1972 era un metodo en los primeros años que salvo mucho tiempo de computadora para hacer analisis. 
+
+La ventaja principal del acercamiente de GLM es que lineariza la relación entre la variable independiente (fitted value) y la predictiva usando lo que se llama un "link" o sea una transformación de los datos. El tipo "link" depende del tipo de repuesta.  En nuestro caso el "link", usa una transformación para convertir la repuesta binomial en lineal.  Hay muchos otros tipos de repuestas que no son normal o binomial donde el metodo de GLM puede ser muy efectivo, como datos que tienen distribución Poisson, logNormal, gamma entre otros.  Este libro no estaremos discutiendo estos tipos de analisis.
+
+La función básica es lo siguiente, donde el logit de la probabilidad de un evento es igual al intercepto más el coefficiento * xi.  Notan que la formula es muy similar a una regresión simple solmanente que la y es la probabilidad de un evento.  
+
+$$logit(p)={ b }_{ 0 }+{ b }_{ 1 }{ x }_{ i }$$
+Si hay más de una variable independiente entonces se expande la formula para las otras variables, cada variable tiene un coefficiente bi. En este caso añadi una variable explicativa suplementaria.  
+
+$$logit(p)={ b }_{ 0 }+{ b }_{ 1 }{ x }_{ i }+{ b }_{ 2 }{ x }_{ i }$$
+
+La "p" es la probabilidad del evento de interes, o sea la probabilidad de "1" occure.  La transformation logística se defina como el logaritmo de los "odds".
+
+$$odds=\frac { p }{ 1-p } =\frac { la\quad probabilidad\quad del\quad evento\quad de\quad interes }{ la\quad probabilidad\quad del\quad ausencia\quad del\quad evento\quad de\quad interes }$$
+
+y por consecuencia.  Nota que los resultados estan en el logaritmo natural.
+
+$$logit=ln\left( \frac { p }{ 1-p }  \right)$$
+
+
+Para evaluar si hay una relación logística se usa la función y la siguiente estructura de la función: "glm(y.binaria~x.continua, data=los_datos, family=binomial())".  
+
+La asignamos un nombre a nuestro modelo "logm".  
+
+```{r, model logitico}
+logm<-glm(binomial~continuo, data= dfLogreg, family = binomial())
+
+summary(logm)
+```
+
+### Interpretación del modelo
+
+Los coefficents (b's) son los "Estimates", con lo siguiente tenemos nuestra mejor linea, $logit(p)=-8.699+0.916*{ x }_{ i }$. El valor de p para la variable "continuo" es menor de 0.05, sugeriendo que es significativo y explica por lo menos en parte la relación entre la variable independiente y dependiente. Si el coefficiente es positivo como en este caso (b = 0.916) hay una relación positiva entre la cantidad de horas que estudia una persona y la probabilidad de pasar el examen.  
+
+Un concepto importante intender en regresión logistica es la intepretación de los coeficientes beta, los "odds ratio", que es lo que se mencionó anteriomente la probabilidad de los eventos dividido sobre los eventos que no ocurieron. Si el "odds ratio" es de 2 significa que la probabildad que el evento occure es dos veces más alto cuando x (x=0) esta presente que cuando x este auscente (x=0). 
+
+
+## Los supuestos de la prueba
+
+Se sugiere que se evalué do componente del modelo, 1) evaluar cuan efectiva es la relación para explicar la independiente sobre la dependiente (Pseudo R cuadrado de McFadden) y 2) evaluar la proporción de observaciones que son corectamente clasificado y 3) un tercer metodo es el ROC "Receiving Operating Characteristic", que es segundo metodo de evaluar cuan efectivo el modelo es a asignar los valores a las categorias corecta.
+
+### Pseudo R^2
+
+Este tipo de R^2 no se interpreta de la misma manera que una regresión lineal. No hay R^2 que explica la proporción de la variación de la independiente sobre la dependiente para la regresión logística. Lo que se usa son indice similares, en este caso el de McFadden donde tiene un rango de cero a casi uno, donde un valor de cero suguiere que no hay relación entre una variable y la otra, y más alto el pseudo R2 de McFadden mejor es como predictor (pero nunca llega a cero). 
+
+Usando la library(pscl) y la función pR2( ) se evalua el R2 de McFadden. La regressión logistica se ajusta usando la máxima verosimilitud, en ingles "maximum likelihood". El indice de pseudo R cuadrado de McFadden compara la verosimilitud (máximo) del modelo (Lc) con el modelo que incluye solamente el intercepto sin covariantes (Lnull). 
+
+$${ R }_{ McFadden }^{ 2 }=1-\frac { log({ L }_{ c }) }{ log({ L }_{ null }) }$$
+ 
+
+```{r}
+library(pscl)
+
+pR2(logm)
+```
+
+
+### La proporción de valores clasificados corectamente
+
+Una manera de evaluar cuan efectivo es el modelo es evaluar si la proporción de valores observado en "1" y "0" son tambien predecido a estar en esta misma categoria. Tenemos tres pasos
+
+1. calcular la probabilidades de estar en un grupo o otro (vea abajo proxima sección si quiere calcular valores individuales)
+2. asignar a cada uno el estado de "1" o "0"
+3. comparar los valores predecido a los valores reales y calcular el promedio para todo el grupo.
+
+Para nuestro grupo de datos ficticio lo que se observa que 95% de los valores estan corectamente asignados.  
+
+
+
+
+```{r}
+library(tidyverse)
+head(dfLogreg)
+probabilities <- logm %>% predict(dfLogreg, type = "response")
+predicted.classes <- ifelse(probabilities > 0.5, "1", "0")
+mean(predicted.classes==dfLogreg$binomial)
+```
