@@ -11,6 +11,12 @@ The file contains contiens 4051 babies from the years 1935 y 1946. The file has 
 3.	Weight_lb; the weight of the babies in pounds
 4.	Survival: babies survived “1” or died “0”.  
 
+
+The steps to making a choice for the appropriate GLM models requires evaluating the type of response variables. 
+
+
+
+
 ```
 birth<-read.csv("Karn_Penrose_Infant_Survivorship_QUBES.csv")
 head(birth)
