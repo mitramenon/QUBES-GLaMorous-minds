@@ -21,23 +21,23 @@ Vol. 20, No. 2 (1958), pp. 215-242. Cox was a statistician from the United Kingd
 In a perfect world you could predict events without error. We create a data set where we have two groups, in the first group (the first ten data of each line) we see that almost all have the binary of "0" apart from one in position nine. In the second group, the values ​​from 10 to 20 in each line all have the value of "1" apart from a data in position 12 of the second line. If it makes it easier for you to think that in the x-axis are the hours that a student is studying for an exam, and the variable "0" and "1" are the consequence, I do not pass (0) / pass the exam (1). We see that the majority of students who study less than 10 hours do not pass the exam and those who study more than 10 hours pass the exam, apart from two students who do not follow the pattern.
 
 
-`` `{r, echo = FALSE}
+```{r, echo = FALSE}
 library (ggplot2)
-`` `
+```
 
 
-`` `{r perfect logistic regression, echo = TRUE, warning = FALSE}
+```{r perfect logistic regression, echo = TRUE, warning = FALSE}
 continuous = c (rep (1: 20.2))
 binomial = c (0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,                       
            0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1)
 dfLogreg = data.frame (continuous, binomial)
-`` `
+```
 
 ### Visualize the logistic regression
 
 To produce the graph you have to use "stat_smooth" with "method =" glm "," glm "means" Generalized Linear Model "(will be explained in the next section), note that you have to indicate the type of data family in the analyzes of "glm", in this case it is "binomial", because we have a response of two alternatives, and finally "se = T" is selected, to have the confidence interval of the curve (the best model). want the confidence interval is added "se = F".  
 
-Typically if one sees a curve, an "S" form, meaning "sigmoid", is what one expects from a logistic regression where there is a threshold to predict the probability of an event. If the curve does not have a "sigmoid" shape, it is likely that the model (logistic regression) is not a good fit for the data. For example, using the graph the probability threshold to pass or not (50%) is approximately 9.5 hours of study. There are more precise methods to calculate the probability of events that will be discussed later.    
+Typically if one sees a curve, an "S" form, meaning "sigmoid", this is what one expects from a logistic regression where there is a threshold to predict the probability of an event. If the curve does not have a "sigmoid" shape, it is likely that the model (logistic regression) is not a good fit for the data. For example, using the graph the probability threshold to pass or not (50%) is approximately 9.5 hours of study. There are more precise methods to calculate the probability of events that will be discussed later.    
 
 `` `{r}
 ggplot (dfLogreg, aes (x = continuous, y = binomial)) +
