@@ -37,7 +37,7 @@ hist(birth$Survival)
 
 ```
 
-![Histogram of survival](https://drive.google.com/drive/folders/1lMHBK0EWF-wR7-RSWJm03lWJ40QBReAK)
+![Histogram of survival](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/hist.pdf)
 # Q:
 *If we want to understand the influence of weight on survival, what is the response and predictor variable based on the dataset? 
 
