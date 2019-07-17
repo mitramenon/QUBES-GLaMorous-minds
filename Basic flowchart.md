@@ -9,7 +9,7 @@ The file contains contiens 4051 babies from the years 1935 y 1946. The file has 
 1.	Line_number
 2.	Gestation_Time_days;  Gestation time from day of conception to day of birth
 3.	Weight_lb; the weight of the babies in pounds
-4.	Survival: el bebe sobrevivio “1”o no “0”
+4.	Survival: babies survived “1” or died “0”.  
 
 ```
 birth<-read.csv("Karn_Penrose_Infant_Survivorship_QUBES.csv")
