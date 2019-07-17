@@ -15,7 +15,7 @@ The file contains contiens 4051 babies from the years 1935 y 1946. The file has 
 birth<-read.csv("Karn_Penrose_Infant_Survivorship_QUBES.csv")
 head(birth)
 summary(birth)
-```
+
 
     row_num        Survival       Weigth_lb      Gestation_Time_days   
  1st Qu.:1014   1st Qu.:1.000   1st Qu.: 6.000   1st Qu.:265.0      
@@ -29,5 +29,7 @@ summary(birth)
  Mean   :2026   Mean   :0.923   Mean   : 7.015   Mean   :276.2      
  3rd Qu.:3039   3rd Qu.:1.000   3rd Qu.: 8.000   3rd Qu.:295.0      
  Max.   :4052   Max.   :1.000   Max.   :13.000   Max.   :345.0   
+```
+
  
  
