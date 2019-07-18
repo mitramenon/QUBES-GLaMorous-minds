@@ -12,5 +12,6 @@ Raymond Trembley, Dinesh Sharma, Mitra Menon, Mao-Lun Wang & Tyler Frazier
 
 <a href = "https://tyzao.github.io/QUBES-GLaMorous-minds/4">Data 4</a>  
 
+![plot1](https://tyzao.github.io/QUBES-GLaMorous-minds/1)
  
 
