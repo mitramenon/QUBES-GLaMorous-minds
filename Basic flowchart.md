@@ -72,13 +72,22 @@ plot(birth[ ,P],birth[ ,R],xlab="Predictor",ylab="Response")
 There are two model choices for you here: `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
 Based on the historgram and the summary generated above which model will you use to address this question.
 
-Below are the series of commands corresponding to logistic and linear regression. You will utilize your intution to run one of these snippets of code. 
+Below are the series of commands corresponding to logistic and linear regression. You will utilize your intution to run these snippets of code and examine them using ggplot2. 
+
+Let's use the linear model first. 
 
 ```{r}
-model1<-glm (birth[ ,R] ~ birth[ ,P],  family = binomial ())
-model2<-glm(birth[ ,R] ~ birth[ ,P], family=gaussian())
+model1<-glm(birth[ ,R] ~ birth[ ,P], family=gaussian())
+ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + geom_smooth (method = lm, color = "yellow") + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
+
+```
+Now let's examine using the binomial model.
+```{r}
+model2<-glm (birth[ ,R] ~ birth[ ,P],  family = binomial ())
+log1<-ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + stat_smooth (method = "glm", method.args = list (family = "binomial")) + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
 
 ```
 
+Which model seems to fit our data better?
 
 
