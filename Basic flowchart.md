@@ -39,10 +39,15 @@ hist(birth$Survival)
 
 ![Histogram of survival](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/hist.pdf)
 # Q:
-*If we want to understand the influence of weight on survival, what is the response and predictor variable based on the dataset? 
+*If we want to understand the influence of weight on survival, what is the response and predictor variable based on the dataset? Below is a code using ggplot to generate figures using all three models 
+```{r}
+ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + stat_smooth (method = "glm", method.args = list (family = "binomial")) + geom_smooth (color = "red") + geom_smooth (method = lm, color = "yellow") + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
+```
 
 There are three model choices for you here: `binary`, `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
 Based on the historgram and the summary generated above which model will you use to address this question.
 
 Below are the series of commands corresponding to binary, logistic and linear regression. You will utilize your intution to run one of these snippets of code. 
+
+
 
