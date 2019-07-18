@@ -56,18 +56,17 @@ Now utilize a series of plots to visualise the response and predictor variables.
 R<-
 P<-
 par(mfrow=c(1,2))
-hist(birth$R,main="Histogram of response variable",col="firebrick")
-hist(birth$P,main="Histogram of predictor variable", col="orange")
+par(mfrow=c(1,2))
+hist(birth [,R],main="Histogram of response variable",col="firebrick",xlab=R)
+hist(birth[ ,P],main="Histogram of predictor variable", col="orange",xlab=P)
 ```
 
 
-<embed src="https://github.com/mitramenon/QUBES-GLaMorous-minds/images/hist.pdf" width="500" height="375" type="application/pdf">
+<embed src="https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/HIST1.pdf" width="500" height="375" type="application/pdf">
 
 ```{r}
-plot(birth$P,birth$R,
+plot(birth[ ,P],birth[ ,R],xlab="Predictor",ylab="Response")
 
-
-ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + stat_smooth (method = "glm", method.args = list (family = "binomial")) + geom_smooth (color = "red") + geom_smooth (method = lm, color = "yellow") + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
 ```
 
 
