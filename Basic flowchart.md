@@ -69,13 +69,16 @@ plot(birth[ ,P],birth[ ,R],xlab="Predictor",ylab="Response")
 
 ```
 
-
-
-
-Now let's examine the response and predictor variables together using ggplot and There are three model choices for you here: `binary`, `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
+There are two model choices for you here: `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
 Based on the historgram and the summary generated above which model will you use to address this question.
 
-Below are the series of commands corresponding to binary, logistic and linear regression. You will utilize your intution to run one of these snippets of code. 
+Below are the series of commands corresponding to logistic and linear regression. You will utilize your intution to run one of these snippets of code. 
+
+```{r}
+model1<-glm (birth[ ,R] ~ birth[ ,P],  family = binomial ())
+model2<-glm(birth[ ,R] ~ birth[ ,P], family=gaussian())
+
+```
 
 
 
