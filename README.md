@@ -1,6 +1,10 @@
 # QUBES-GLaMorous-minds
 
-Thi
+Glamourous Minds is :
 
-Hi this is Tyler, here is something to say -- something
+Raymond Trembley, Dinesh Sharma, Mitra Menon, Mao Wang & Tyler Frazier
+
+<a href = "https://github.com/tyzao/QUBES-GLaMorous-minds/edit/master/1.html">Data 1</a>  
+
+ 
 
