@@ -81,7 +81,7 @@ model1<-glm(birth[ ,R] ~ birth[ ,P], family=gaussian())
 ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + geom_smooth (method = lm, color = "yellow") + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
 
 ```
-![Linear](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/lin.tiff)
+![Linear](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/linear.pdf)
 
 Now let's examine using the binomial model.
 ```{r}
