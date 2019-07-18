@@ -11,14 +11,27 @@ The file contains contiens 4051 babies from the years 1935 y 1946. The file has 
 3.	Weight_lb; the weight of the babies in pounds
 4.	Survival: "1" or "0"
 
-* Explore the dataset by summarising and plotting it
+# Objectives:
+1. Model the probability of survival as a function of gestation time
+2. Model the average weight of the new-born as a function of  the gestation period. 
+
+First look at the data. 
+*Make sure your directory is set correctly and the required file is present in the directory. Use `getwd` and `setwd` to do this.
 
 ```
 birth<-read.csv("Karn_Penrose_Infant_Survivorship_QUBES.csv")
+
 head(birth)
+  row_num Survival Weigth_lb Gestation_Time_days
+1       1        0       1.0                 155
+2       2        0       1.0                 165
+3       3        0       1.0                 165
+4       4        0       5.5                 170
+5       5        0       1.0                 180
+6       6        0       1.5                 180
+
+
 summary(birth)
-
-
     row_num        Survival       Weigth_lb      Gestation_Time_days   
  1st Qu.:1014   1st Qu.:1.000   1st Qu.: 6.000   1st Qu.:265.0      
  Median :2026   Median :1.000   Median : 7.000   Median :280.0      
@@ -32,19 +45,38 @@ summary(birth)
  3rd Qu.:3039   3rd Qu.:1.000   3rd Qu.: 8.000   3rd Qu.:295.0      
  Max.   :4052   Max.   :1.000   Max.   :13.000   Max.   :345.0   
 
-hist(birth$Survival)
-
-
 ```
 
+# Obj.1: Modeling survial probability 
+What is the response and predictor variable based on the dataset? 
+Now utilize a series of plots to visualise the response and predictor variables. *You are required to enter the response and predictor variables in the snippet below*.
+
+
+
 ![Histogram of survival](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/hist.pdf)
-# Q:
-*If we want to understand the influence of weight on survival, what is the response and predictor variable based on the dataset? Below is a code using ggplot to generate figures using all three models 
+
 ```{r}
+R<-
+P<-
+par(mfrow=c(1,2))
+hist(birth$R,main="Histogram of response variable",col="firebrick")
+hist(birth$P,main="Histogram of predictor variable", col="orange")
+```
+
+
+<embed src="https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/hist.pdf" width="500" height="375" type="application/pdf">
+
+```{r}
+plot(birth$P,birth$R,
+
+
 ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + stat_smooth (method = "glm", method.args = list (family = "binomial")) + geom_smooth (color = "red") + geom_smooth (method = lm, color = "yellow") + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
 ```
 
-There are three model choices for you here: `binary`, `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
+
+
+
+Now let's examine the response and predictor variables together using ggplot and There are three model choices for you here: `binary`, `logistic` or `linear` regression. All of these are implemented within the `glm` function in `R`.
 Based on the historgram and the summary generated above which model will you use to address this question.
 
 Below are the series of commands corresponding to binary, logistic and linear regression. You will utilize your intution to run one of these snippets of code. 
