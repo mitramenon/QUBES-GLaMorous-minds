@@ -52,9 +52,6 @@ What is the response and predictor variable based on the dataset?
 Now utilize a series of plots to visualise the response and predictor variables. *You are required to enter the response and predictor variables in the snippet below*.
 
 
-
-![Histogram of survival](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/hist.pdf)
-
 ```{r}
 R<-
 P<-
@@ -64,7 +61,7 @@ hist(birth$P,main="Histogram of predictor variable", col="orange")
 ```
 
 
-<embed src="https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/hist.pdf" width="500" height="375" type="application/pdf">
+<embed src="https://github.com/mitramenon/QUBES-GLaMorous-minds/images/hist.pdf" width="500" height="375" type="application/pdf">
 
 ```{r}
 plot(birth$P,birth$R,
