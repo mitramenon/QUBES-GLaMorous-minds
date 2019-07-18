@@ -2,7 +2,7 @@
 
 Glamourous Minds is :
 
-Raymond Trembley, Dinesh Sharma, Mitra Menon, Mao Wang & Tyler Frazier
+Raymond Trembley, Dinesh Sharma, Mitra Menon, Mao-Lun Wang & Tyler Frazier
 
 <a href = "https://tyzao.github.io/QUBES-GLaMorous-minds/1">Data 1</a>  
 
