@@ -1,6 +1,4 @@
 # Describe the dataset
-![GitHub Logo](/images/logo.png)
-Format: ![Alt Text](url)
 
 
 # DATASET 1
@@ -65,7 +63,7 @@ hist(birth[ ,P],main="Histogram of predictor variable", col="orange",xlab=P)
 ```
 
 
-<embed src="https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/HIST1.pdf" width="500" height="375" type="application/pdf">
+![HISTOGRAM](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/HIST1.pdf)
 
 ```{r}
 plot(birth[ ,P],birth[ ,R],xlab="Predictor",ylab="Response")
@@ -84,7 +82,7 @@ model1<-glm(birth[ ,R] ~ birth[ ,P], family=gaussian())
 ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + geom_smooth (method = lm, color = "yellow") + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
 
 ```
-![Linear]("https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/linear.pdf")
+![Linear](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/linear.pdf)
 
 Now let's examine using the binomial model.
 ```{r}
@@ -92,6 +90,7 @@ model2<-glm (birth[ ,R] ~ birth[ ,P],  family = binomial ())
 log1<-ggplot (birth, aes (x = Gestation_Time_days, y = Survival)) + geom_jitter (height = 0.10) + stat_smooth (method = "glm", method.args = list (family = "binomial")) + labs (x = "Weight Index", y = "Surv Probability") + ggtitle ("Models of Male Survival Probabilities at Birth based on Weight")
 
 ```
+![Binomial](https://github.com/mitramenon/QUBES-GLaMorous-minds/blob/master/images/bino.pdf)
 
 Which model seems to fit our data better?
 
